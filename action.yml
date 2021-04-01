@@ -1,5 +1,9 @@
 name: 'Modify package json'
 description: 'Allows you to modify npms package.json'
+author: MYXOMOPX
+branding:
+  color: yellow
+  icon: file-text
 inputs:
   target:  
     description: 'Path to package.json'
