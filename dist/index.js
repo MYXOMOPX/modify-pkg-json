@@ -462,11 +462,13 @@ const ACTION_MAP = {
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     let targetJSON;
     try {
+        core.info(`Trying to open ${targetFilePath}`);
         targetJSON = JSON.parse(yield fs_1.promises.readFile(targetFilePath, { encoding: "utf8" }));
         core.info("Package file opened");
     }
     catch (e) {
         core.setFailed(`Can't open and/or parse package file: ${targetFilePath}`);
+        return;
     }
     if (ACTION_MAP[action] == null) {
         core.setFailed(`Unknown action: ${action}`);
