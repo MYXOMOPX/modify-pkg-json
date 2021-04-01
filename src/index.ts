@@ -1,16 +1,21 @@
 import * as core from '@actions/core';
 import {promises as fs} from "fs";
+import path from "path";
+
+
+const workspaceDir = process.env.GITHUB_WORKSPACE || "./";
 
 const getInputFilePath = (name: string, def: string|undefined): string => {
-	const path = core.getInput('target', { required: def == undefined });
-	if (!path) return def as string;
-	return path;
+	const p = core.getInput('target', { required: def == undefined });
+	if (!p) return def as string;
+	return path.join(workspaceDir, p);
 }
 
 const targetFilePath = getInputFilePath('target', undefined); //core.getInput('target', { required: true });
 const saveToPath = getInputFilePath('save_to', targetFilePath);
 const action = core.getInput('action', { required: true,  });
 const actionArgs = core.getInput('argument', { required: false  });
+
 
 
 

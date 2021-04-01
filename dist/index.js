@@ -424,14 +424,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
 const fs_1 = __nccwpck_require__(747);
+const path_1 = __importDefault(__nccwpck_require__(622));
+const workspaceDir = process.env.GITHUB_WORKSPACE || "./";
 const getInputFilePath = (name, def) => {
-    const path = core.getInput('target', { required: def == undefined });
-    if (!path)
+    const p = core.getInput('target', { required: def == undefined });
+    if (!p)
         return def;
-    return path;
+    return path_1.default.join(workspaceDir, p);
 };
 const targetFilePath = getInputFilePath('target', undefined);
 const saveToPath = getInputFilePath('save_to', targetFilePath);
