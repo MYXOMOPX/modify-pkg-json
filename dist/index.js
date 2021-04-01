@@ -437,46 +437,49 @@ const targetFilePath = getInputFilePath('target', undefined);
 const saveToPath = getInputFilePath('save_to', targetFilePath);
 const action = core.getInput('action', { required: true, });
 const actionArgs = core.getInput('argument', { required: false });
-let targetFile;
-try {
-    targetFile = require(targetFilePath);
-    core.info("Package file opened");
-}
-catch (e) {
-    core.setFailed(`Can't open package file: ${targetFilePath}`);
-}
 const saveModifiedPackage = (data) => __awaiter(void 0, void 0, void 0, function* () {
     return fs_1.promises.writeFile(saveToPath, JSON.stringify(data, null, 4));
 });
 const ACTION_MAP = {
-    update_version: (arg) => __awaiter(void 0, void 0, void 0, function* () {
-        targetFile.version = String(arg);
-        saveModifiedPackage(targetFile);
+    update_version: (json, arg) => __awaiter(void 0, void 0, void 0, function* () {
+        json.version = String(arg);
+        saveModifiedPackage(json);
         return arg;
     }),
-    update_dep: (arg) => __awaiter(void 0, void 0, void 0, function* () {
+    update_dep: (json, arg) => __awaiter(void 0, void 0, void 0, function* () {
         const [depName, version] = arg.split(" ");
-        targetFile.dependencies[depName] = version;
-        saveModifiedPackage(targetFile);
+        json.dependencies[depName] = version;
+        saveModifiedPackage(json);
         return version;
     }),
-    update_devdep: (arg) => __awaiter(void 0, void 0, void 0, function* () {
+    update_devdep: (json, arg) => __awaiter(void 0, void 0, void 0, function* () {
         const [depName, version] = arg.split(" ");
-        targetFile.devDependencies[depName] = version;
-        saveModifiedPackage(targetFile);
+        json.devDependencies[depName] = version;
+        saveModifiedPackage(json);
         return version;
     }),
 };
-if (ACTION_MAP[action] == null) {
-    core.setFailed(`Unknown action: ${action}`);
-}
-try {
-    const res = ACTION_MAP[action](actionArgs);
-    core.setOutput("result", res);
-}
-catch (err) {
-    core.setFailed(`Action failed with error ${err}`);
-}
+const run = () => __awaiter(void 0, void 0, void 0, function* () {
+    let targetJSON;
+    try {
+        targetJSON = JSON.parse(yield fs_1.promises.readFile(targetFilePath, { encoding: "utf8" }));
+        core.info("Package file opened");
+    }
+    catch (e) {
+        core.setFailed(`Can't open package file: ${targetFilePath}`);
+    }
+    if (ACTION_MAP[action] == null) {
+        core.setFailed(`Unknown action: ${action}`);
+    }
+    try {
+        const res = ACTION_MAP[action](targetJSON, actionArgs);
+        core.setOutput("result", res);
+    }
+    catch (err) {
+        core.setFailed(`Action failed with error ${err}`);
+    }
+});
+run();
 
 
 /***/ }),

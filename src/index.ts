@@ -12,45 +12,53 @@ const saveToPath = getInputFilePath('save_to', targetFilePath);
 const action = core.getInput('action', { required: true,  });
 const actionArgs = core.getInput('argument', { required: false  });
 
-let targetFile;
-try {
-	targetFile = require(targetFilePath);
-	core.info("Package file opened");
-} catch (e) {
-	core.setFailed(`Can't open package file: ${targetFilePath}`);
-}
+
 
 const saveModifiedPackage = async (data: any) => {
 	return fs.writeFile(saveToPath, JSON.stringify(data,null, 4))
 }
 
+
 const ACTION_MAP = {
-	update_version: async (arg: string | number) => {
-		targetFile.version = String(arg);
-		saveModifiedPackage(targetFile);
+	update_version: async (json: any, arg: string | number) => {
+		json.version = String(arg);
+		saveModifiedPackage(json);
 		return arg;
 	},
-	update_dep: async (arg: string) => {
+	update_dep: async (json: any, arg: string) => {
 		const [depName, version] = arg.split(" ");
-		targetFile.dependencies[depName] = version;
-		saveModifiedPackage(targetFile);
+		json.dependencies[depName] = version;
+		saveModifiedPackage(json);
 		return version;
 	},
-	update_devdep: async (arg: string) => {
+	update_devdep: async (json: any, arg: string) => {
 		const [depName, version] = arg.split(" ");
-		targetFile.devDependencies[depName] = version;
-		saveModifiedPackage(targetFile);
+		json.devDependencies[depName] = version;
+		saveModifiedPackage(json);
 		return version;
 	},
 };
 
-if (ACTION_MAP[action] == null) {
-	core.setFailed(`Unknown action: ${action}`);
+const run = async () => {
+	let targetJSON;
+
+	try {
+		targetJSON = JSON.parse(await fs.readFile(targetFilePath, {encoding: "utf8"}))
+		core.info("Package file opened");
+	} catch (e) {
+		core.setFailed(`Can't open package file: ${targetFilePath}`);
+	}
+
+	if (ACTION_MAP[action] == null) {
+		core.setFailed(`Unknown action: ${action}`);
+	}
+
+	try {
+		const res = ACTION_MAP[action](targetJSON, actionArgs)
+		core.setOutput("result", res);
+	} catch (err) {
+		core.setFailed(`Action failed with error ${err}`);
+	}
 }
 
-try {
-	const res = ACTION_MAP[action](actionArgs)
-	core.setOutput("result", res);
-} catch (err) {
-	core.setFailed(`Action failed with error ${err}`);
-}
+run();
