@@ -1,6 +1,6 @@
 {
     "name": "modify-package-json",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "Github action for modifying package.json",
     "main": "index.js",
     "scripts": {

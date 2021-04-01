@@ -25,22 +25,33 @@ const saveModifiedPackage = async (data: any) => {
 
 
 const ACTION_MAP = {
-	update_version: async (json: any, arg: string | number) => {
+	set_version: async (json: any, arg: string | number) => {
 		json.version = String(arg);
 		saveModifiedPackage(json);
 		return arg;
 	},
-	update_dep: async (json: any, arg: string) => {
+	set_dep_version: async (json: any, arg: string) => {
 		const [depName, version] = arg.split(" ");
+		json.dependencies = json.dependencies || {}
 		json.dependencies[depName] = version;
 		saveModifiedPackage(json);
 		return version;
 	},
-	update_devdep: async (json: any, arg: string) => {
+	set_devdep_version: async (json: any, arg: string) => {
 		const [depName, version] = arg.split(" ");
+		json.devDependencies = json.devDependencies || {}
 		json.devDependencies[depName] = version;
 		saveModifiedPackage(json);
 		return version;
+	},
+	get_dep_version: async (json: any, arg: string) => {
+		return json.dependencies ? json.dependencies[arg] : null;
+	},
+	get_devdep_version: async (json: any, arg: string) => {
+		return json.devDependencies ? json.devDependencies[arg] : null;
+	},
+	get_version: async (json: any, arg: string) => {
+		return json.version
 	},
 };
 

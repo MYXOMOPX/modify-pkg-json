@@ -446,22 +446,33 @@ const saveModifiedPackage = (data) => __awaiter(void 0, void 0, void 0, function
     return fs_1.promises.writeFile(saveToPath, JSON.stringify(data, null, 4));
 });
 const ACTION_MAP = {
-    update_version: (json, arg) => __awaiter(void 0, void 0, void 0, function* () {
+    set_version: (json, arg) => __awaiter(void 0, void 0, void 0, function* () {
         json.version = String(arg);
         saveModifiedPackage(json);
         return arg;
     }),
-    update_dep: (json, arg) => __awaiter(void 0, void 0, void 0, function* () {
+    set_dep_version: (json, arg) => __awaiter(void 0, void 0, void 0, function* () {
         const [depName, version] = arg.split(" ");
+        json.dependencies = json.dependencies || {};
         json.dependencies[depName] = version;
         saveModifiedPackage(json);
         return version;
     }),
-    update_devdep: (json, arg) => __awaiter(void 0, void 0, void 0, function* () {
+    set_devdep_version: (json, arg) => __awaiter(void 0, void 0, void 0, function* () {
         const [depName, version] = arg.split(" ");
+        json.devDependencies = json.devDependencies || {};
         json.devDependencies[depName] = version;
         saveModifiedPackage(json);
         return version;
+    }),
+    get_dep_version: (json, arg) => __awaiter(void 0, void 0, void 0, function* () {
+        return json.dependencies ? json.dependencies[arg] : null;
+    }),
+    get_devdep_version: (json, arg) => __awaiter(void 0, void 0, void 0, function* () {
+        return json.devDependencies ? json.devDependencies[arg] : null;
+    }),
+    get_version: (json, arg) => __awaiter(void 0, void 0, void 0, function* () {
+        return json.version;
     }),
 };
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
