@@ -466,7 +466,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         core.info("Package file opened");
     }
     catch (e) {
-        core.setFailed(`Can't open package file: ${targetFilePath}`);
+        core.setFailed(`Can't open and/or parse package file: ${targetFilePath}`);
     }
     if (ACTION_MAP[action] == null) {
         core.setFailed(`Unknown action: ${action}`);

@@ -46,7 +46,7 @@ const run = async () => {
 		targetJSON = JSON.parse(await fs.readFile(targetFilePath, {encoding: "utf8"}))
 		core.info("Package file opened");
 	} catch (e) {
-		core.setFailed(`Can't open package file: ${targetFilePath}`);
+		core.setFailed(`Can't open and/or parse package file: ${targetFilePath}`);
 	}
 
 	if (ACTION_MAP[action] == null) {
