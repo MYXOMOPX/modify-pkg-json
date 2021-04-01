@@ -12,7 +12,7 @@ inputs:
   save_to:  
     description: 'Where to save modified package.json'
     required: false
-  arguments:
+  argument:
     description: 'arguments for action'
     required: false
 outputs:

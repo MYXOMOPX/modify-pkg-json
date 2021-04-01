@@ -8,9 +8,9 @@ const getInputFilePath = (name: string, def: string|undefined): string => {
 }
 
 const targetFilePath = getInputFilePath('target', undefined); //core.getInput('target', { required: true });
-const saveToPath = getInputFilePath('target', targetFilePath);
+const saveToPath = getInputFilePath('save_to', targetFilePath);
 const action = core.getInput('action', { required: true,  });
-const actionArgs = core.getInput('action', { required: false  });
+const actionArgs = core.getInput('argument', { required: false  });
 
 let targetFile;
 try {
@@ -25,21 +25,19 @@ const saveModifiedPackage = async (data: any) => {
 }
 
 const ACTION_MAP = {
-	update_version: async (args) => {
-		targetFile.version = args[0];
+	update_version: async (arg: string | number) => {
+		targetFile.version = String(arg);
 		saveModifiedPackage(targetFile);
-		return args[0];
+		return arg;
 	},
-	update_dep: async (args) => {
-		const depName = args[0];
-		const version = args[1];
+	update_dep: async (arg: string) => {
+		const [depName, version] = arg.split(" ");
 		targetFile.dependencies[depName] = version;
 		saveModifiedPackage(targetFile);
 		return version;
 	},
-	update_devdep: async (args) => {
-		const depName = args[0];
-		const version = args[1];
+	update_devdep: async (arg: string) => {
+		const [depName, version] = arg.split(" ");
 		targetFile.devDependencies[depName] = version;
 		saveModifiedPackage(targetFile);
 		return version;

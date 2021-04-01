@@ -54,6 +54,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var core = __importStar(require("@actions/core"));
 var fs_1 = require("fs");
@@ -64,9 +80,9 @@ var getInputFilePath = function (name, def) {
     return path;
 };
 var targetFilePath = getInputFilePath('target', undefined); //core.getInput('target', { required: true });
-var saveToPath = getInputFilePath('target', targetFilePath);
+var saveToPath = getInputFilePath('save_to', targetFilePath);
 var action = core.getInput('action', { required: true, });
-var actionArgs = core.getInput('action', { required: false });
+var actionArgs = core.getInput('argument', { required: false });
 var targetFile;
 try {
     targetFile = require(targetFilePath);
@@ -81,28 +97,26 @@ var saveModifiedPackage = function (data) { return __awaiter(void 0, void 0, voi
     });
 }); };
 var ACTION_MAP = {
-    update_version: function (args) { return __awaiter(void 0, void 0, void 0, function () {
+    update_version: function (arg) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            targetFile.version = args[0];
+            targetFile.version = String(arg);
             saveModifiedPackage(targetFile);
-            return [2 /*return*/, args[0]];
+            return [2 /*return*/, arg];
         });
     }); },
-    update_dep: function (args) { return __awaiter(void 0, void 0, void 0, function () {
-        var depName, version;
-        return __generator(this, function (_a) {
-            depName = args[0];
-            version = args[1];
+    update_dep: function (arg) { return __awaiter(void 0, void 0, void 0, function () {
+        var _a, depName, version;
+        return __generator(this, function (_b) {
+            _a = __read(arg.split(" "), 2), depName = _a[0], version = _a[1];
             targetFile.dependencies[depName] = version;
             saveModifiedPackage(targetFile);
             return [2 /*return*/, version];
         });
     }); },
-    update_devdep: function (args) { return __awaiter(void 0, void 0, void 0, function () {
-        var depName, version;
-        return __generator(this, function (_a) {
-            depName = args[0];
-            version = args[1];
+    update_devdep: function (arg) { return __awaiter(void 0, void 0, void 0, function () {
+        var _a, depName, version;
+        return __generator(this, function (_b) {
+            _a = __read(arg.split(" "), 2), depName = _a[0], version = _a[1];
             targetFile.devDependencies[depName] = version;
             saveModifiedPackage(targetFile);
             return [2 /*return*/, version];
