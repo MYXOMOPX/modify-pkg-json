@@ -1,0 +1,23 @@
+name: 'Modify package json'
+description: 'Allows you to modify npms package.json'
+inputs:
+  target:  
+    description: 'Path to package.json'
+    required: true
+    default: 'package.json'
+  action:  
+    description: 'Action to perform'
+    required: true
+    default: 'update_version'
+  save_to:  
+    description: 'Where to save modified package.json'
+    required: false
+  arguments:
+    description: 'arguments for action'
+    required: false
+outputs:
+  result: # id of output
+    description: 'Result of action'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

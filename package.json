@@ -1,0 +1,28 @@
+{
+  "name": "modify-package-json",
+  "version": "0.0.1",
+  "description": "Github action for modifying package.json",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "build-clean": "npm run clean && npm run build"
+  },
+  "author": "MYXOMOPX",
+  "license": "ISC",
+  "devDependencies": {
+    "@actions/core": "^1.2.6",
+    "@types/node": "^14.14.37",
+    "typescript": "^4.2.3",
+    "husky": "^4.2.5",
+    "rimraf": "^3.0.2"
+  },
+  "dependencies": {
+    "@actions/exec": "^1.0.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run build-clean && git add dist"
+    }
+  }
+}
