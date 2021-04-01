@@ -63,8 +63,12 @@ Existing:
     
 * get_dep_version - gets a dependency version of package.json
   * argument: dependency name
-  * result: current version of dependency   
+  * result: a current version of dependency   
   
 * get_devdep_version - gets a dev-dependency version of package.json
   * argument: dev-dependency name 
-  * result: current version of dev-dependency 
+  * result: a current version of dev-dependency 
+  
+ # Caution
+ * Currently this action only changes file and does not perform git commit/push
+ * It changes an entire file, so you probably may have problems with merge
